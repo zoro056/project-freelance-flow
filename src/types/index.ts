@@ -1,4 +1,3 @@
-
 export interface User {
   id: string;
   name: string;
@@ -47,7 +46,30 @@ export interface Category {
   description: string;
 }
 
-// Form Data Types
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar?: string;
+  receiverId: string;
+  content: string;
+  createdAt: string;
+  isRead: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  participantIds: string[];
+  participantNames: string[];
+  participantAvatars?: string[];
+  lastMessage?: string;
+  lastMessageTime?: string;
+  orderId?: string;
+  gigId?: string;
+  unreadCount: number;
+}
+
 export interface LoginFormData {
   email: string;
   password: string;
