@@ -1,215 +1,240 @@
 
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { gigs, users } from "@/data/mock";
-import { useAuth } from "@/providers/AuthProvider";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import RatingStars from "@/components/ui/RatingStars";
-import { AlertCircle, CheckCircle, Clock, DollarSign, User } from "lucide-react";
+import { gigs } from "@/data/mock";
+import { Gig } from "@/types";
 
 export default function GigDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const [isOrdering, setIsOrdering] = useState(false);
-  
-  // Find the gig in our mock data
-  const gig = gigs.find(g => g.id === id);
-  
-  // If gig doesn't exist, show not found
+  const [selectedPackage, setSelectedPackage] = useState<"basic" | "standard" | "premium">("basic");
+
+  // Find the gig with the matching ID
+  const gig = gigs.find((g) => g.id === id) || null;
+
   if (!gig) {
     return (
       <Layout>
         <div className="container mx-auto py-12 text-center">
-          <AlertCircle className="mx-auto h-12 w-12 text-red-500 mb-4" />
-          <h1 className="text-2xl font-bold mb-4">Gig Not Found</h1>
+          <h1 className="text-2xl font-bold mb-4">Gig not found</h1>
           <p className="mb-6">The gig you're looking for doesn't exist or has been removed.</p>
           <Button asChild>
-            <a href="/gigs">Browse All Gigs</a>
+            <Link to="/gigs">Browse Gigs</Link>
           </Button>
         </div>
       </Layout>
     );
   }
-  
-  // Find the seller
-  const seller = users.find(u => u.id === gig.sellerId);
 
   const handleOrderNow = () => {
-    if (!user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to place an order",
-        variant: "destructive",
-      });
-      navigate("/login");
-      return;
-    }
-    
-    setIsOrdering(true);
-    
-    // Simulate API call for creating an order
-    setTimeout(() => {
-      setIsOrdering(false);
-      toast({
-        title: "Order placed successfully",
-        description: "You'll be redirected to payment",
-      });
-      
-      // In a real app, this would redirect to Stripe checkout
-      // For now, we'll just redirect to the orders page
-      navigate("/my-orders");
-    }, 1500);
+    toast({
+      title: "Order placed",
+      description: "Your order has been placed successfully!",
+    });
+    // In a real app, this would redirect to checkout or create an order
   };
-  
+
   return (
     <Layout>
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
           <div className="lg:col-span-2">
-            <h1 className="text-3xl font-bold mb-2">{gig.title}</h1>
+            <h1 className="text-3xl font-bold mb-4">{gig.title}</h1>
             
-            <div className="flex items-center gap-2 mb-6">
-              <RatingStars rating={gig.rating} />
-              <span className="text-sm text-gray-600">({gig.reviewCount} reviews)</span>
-            </div>
-            
-            {gig.imageUrl && (
-              <div className="mb-8 rounded-lg overflow-hidden">
-                <img
-                  src={gig.imageUrl}
-                  alt={gig.title}
-                  className="w-full h-auto object-cover rounded-lg"
-                />
+            <div className="flex items-center mb-6">
+              <Avatar className="h-8 w-8 mr-2">
+                <AvatarImage src="/placeholder.svg" />
+                <AvatarFallback>S</AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">{gig.sellerName}</p>
+                <div className="flex items-center">
+                  <RatingStars rating={gig.rating} />
+                  <span className="text-sm text-gray-500 ml-1">({gig.reviewCount})</span>
+                </div>
               </div>
-            )}
-            
-            <Tabs defaultValue="description" className="w-full mb-8">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="description">Description</TabsTrigger>
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="description" className="mt-6">
-                <h3 className="text-xl font-bold mb-4">About This Gig</h3>
-                <div className="prose max-w-none">
-                  <p className="mb-4">{gig.description}</p>
-                  <p>
-                    Let me bring your ideas to life with high-quality work delivered on time.
-                    I pride myself on communication and making sure you're 100% satisfied with
-                    the final result.
-                  </p>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="details" className="mt-6">
-                <h3 className="text-xl font-bold mb-4">Gig Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-5 w-5 text-gray-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Delivery Time</p>
-                      <p className="text-gray-600">3-5 days</p>
-                    </div>
+            </div>
+
+            <div className="rounded-lg overflow-hidden mb-6">
+              {/* Using placeholder image since gig.imageUrl is not in the type */}
+              <img 
+                src="/placeholder.svg" 
+                alt={gig.title} 
+                className="w-full h-[400px] object-cover"
+              />
+            </div>
+
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">About This Gig</h2>
+              <p className="text-gray-700">{gig.description}</p>
+            </div>
+
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">What's Included</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {gig.includes.map((item, index) => (
+                  <div key={index} className="flex items-start">
+                    <div className="mr-2 mt-1 text-green-500">✓</div>
+                    <div>{item}</div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-gray-500 mt-0.5" />
-                    <div>
-                      <p className="font-medium">Revisions</p>
-                      <p className="text-gray-600">3 revisions included</p>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="reviews" className="mt-6">
-                <h3 className="text-xl font-bold mb-4">Customer Reviews</h3>
-                {gig.reviewCount > 0 ? (
-                  <div className="space-y-6">
-                    {/* This would normally come from the API */}
-                    <div className="border-b pb-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <RatingStars rating={5} />
-                        <span className="font-medium">Great experience!</span>
+                ))}
+              </div>
+            </div>
+
+            <Accordion type="single" collapsible className="mb-8">
+              <AccordionItem value="faq-1">
+                <AccordionTrigger>How long does it take to complete an order?</AccordionTrigger>
+                <AccordionContent>
+                  Delivery time depends on the package you select. Basic packages are typically delivered within {gig.deliveryTime} days.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="faq-2">
+                <AccordionTrigger>Do you offer revisions?</AccordionTrigger>
+                <AccordionContent>
+                  Yes, the number of revisions depends on the package. Basic packages include {gig.revisions} revisions.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="faq-3">
+                <AccordionTrigger>What if I'm not satisfied with the work?</AccordionTrigger>
+                <AccordionContent>
+                  If you're not satisfied, you can request revisions based on your package. If issues persist, our customer support team can help resolve any concerns.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4">Reviews</h2>
+              <div className="space-y-4">
+                {[1, 2, 3].map((review) => (
+                  <Card key={review}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-start gap-4">
+                        <Avatar>
+                          <AvatarImage src="/placeholder.svg" />
+                          <AvatarFallback>U</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="flex items-center mb-1">
+                            <p className="font-medium mr-2">User{review}</p>
+                            <RatingStars rating={5} />
+                          </div>
+                          <p className="text-sm text-gray-500 mb-2">1 month ago</p>
+                          <p>Excellent service! Delivered exactly what I wanted and ahead of schedule.</p>
+                        </div>
                       </div>
-                      <p className="text-gray-600 mb-2">
-                        The seller delivered high-quality work ahead of schedule. Would definitely recommend!
-                      </p>
-                      <p className="text-sm text-gray-500">Posted on {new Date().toLocaleDateString()}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No reviews yet.</p>
-                )}
-              </TabsContent>
-            </Tabs>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
-          
-          <div className="lg:col-span-1">
+
+          {/* Sidebar */}
+          <div>
             <Card className="sticky top-4">
-              <CardContent className="pt-6">
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-2xl font-bold">${gig.price.toFixed(2)}</span>
-                    <span className="text-sm text-gray-600">Starting at</span>
-                  </div>
-                  
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
                   <Button 
-                    className="w-full mb-4"
-                    onClick={handleOrderNow}
-                    disabled={isOrdering}
+                    variant={selectedPackage === "basic" ? "default" : "outline"} 
+                    className="flex-1"
+                    onClick={() => setSelectedPackage("basic")}
                   >
-                    {isOrdering ? "Processing..." : "Order Now"}
+                    Basic
                   </Button>
-                  
-                  <p className="text-sm text-center text-gray-500 mb-6">
-                    You won't be charged yet
+                  <Button 
+                    variant={selectedPackage === "standard" ? "default" : "outline"} 
+                    className="flex-1"
+                    onClick={() => setSelectedPackage("standard")}
+                  >
+                    Standard
+                  </Button>
+                  <Button 
+                    variant={selectedPackage === "premium" ? "default" : "outline"} 
+                    className="flex-1"
+                    onClick={() => setSelectedPackage("premium")}
+                  >
+                    Premium
+                  </Button>
+                </div>
+
+                <div className="mb-4">
+                  <div className="flex justify-between mb-2">
+                    <h3 className="font-bold text-lg">
+                      {selectedPackage === "basic" 
+                        ? "Basic Package" 
+                        : selectedPackage === "standard" 
+                          ? "Standard Package" 
+                          : "Premium Package"}
+                    </h3>
+                    <p className="font-bold text-lg">${gig.price}</p>
+                  </div>
+                  <p className="text-gray-600 mb-4">
+                    {selectedPackage === "basic" 
+                      ? "Everything you need to get started" 
+                      : selectedPackage === "standard" 
+                        ? "Great for professionals" 
+                        : "For those who need the best"}
                   </p>
-                  
-                  <div className="border-t pt-4">
-                    <h4 className="font-bold mb-3">This package includes:</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span className="text-sm">{gig.title}</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span className="text-sm">3 revisions</span>
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span className="text-sm">Delivery within 3-5 days</span>
-                      </li>
-                    </ul>
+                </div>
+
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between">
+                    <span>Delivery Time</span>
+                    <span className="font-medium">
+                      {selectedPackage === "basic" 
+                        ? gig.deliveryTime 
+                        : selectedPackage === "standard" 
+                          ? gig.deliveryTime - 1 
+                          : gig.deliveryTime - 2} days
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Revisions</span>
+                    <span className="font-medium">
+                      {selectedPackage === "basic" 
+                        ? gig.revisions 
+                        : selectedPackage === "standard" 
+                          ? gig.revisions + 1 
+                          : "Unlimited"}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span>Total</span>
+                    <span className="font-bold">
+                      ${selectedPackage === "basic" 
+                        ? gig.price 
+                        : selectedPackage === "standard" 
+                          ? gig.price * 1.5 
+                          : gig.price * 2.5}
+                    </span>
                   </div>
                 </div>
-                
-                {seller && (
-                  <div className="border-t pt-4">
-                    <h4 className="font-bold mb-3">About the Seller</h4>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                        <User className="h-6 w-6 text-gray-500" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{seller.name}</p>
-                        <p className="text-sm text-gray-600">
-                          Member since {new Date(seller.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full">
-                      Contact Seller
-                    </Button>
-                  </div>
-                )}
+
+                <Button className="w-full mb-4" onClick={handleOrderNow}>
+                  Order Now
+                </Button>
+
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                  <Badge variant="outline">
+                    {gig.orders}+ orders in queue
+                  </Badge>
+                </div>
               </CardContent>
             </Card>
           </div>
