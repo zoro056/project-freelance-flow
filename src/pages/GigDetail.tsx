@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,10 +17,14 @@ import { useToast } from "@/hooks/use-toast";
 import RatingStars from "@/components/ui/RatingStars";
 import { gigs } from "@/data/mock";
 import { Gig } from "@/types";
+import { MessageCircle } from "lucide-react";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function GigDetail() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedPackage, setSelectedPackage] = useState<"basic" | "standard" | "premium">("basic");
 
   // Find the gig with the matching ID
@@ -48,6 +52,26 @@ export default function GigDetail() {
     // In a real app, this would redirect to checkout or create an order
   };
 
+  const handleContactSeller = () => {
+    if (!user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to contact the seller",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // In a real app, this would create a conversation if it doesn't exist
+    // and then navigate to the messages page with that conversation open
+    navigate("/messages");
+    
+    toast({
+      title: "Conversation started",
+      description: `You can now message ${gig.sellerName} about this gig`,
+    });
+  };
+
   return (
     <Layout>
       <div className="container mx-auto py-8">
@@ -68,6 +92,15 @@ export default function GigDetail() {
                   <span className="text-sm text-gray-500 ml-1">({gig.reviewCount || 0})</span>
                 </div>
               </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="ml-auto flex items-center gap-2"
+                onClick={handleContactSeller}
+              >
+                <MessageCircle size={16} />
+                Contact Seller
+              </Button>
             </div>
 
             <div className="rounded-lg overflow-hidden mb-6">
@@ -227,6 +260,15 @@ export default function GigDetail() {
 
                 <Button className="w-full mb-4" onClick={handleOrderNow}>
                   Order Now
+                </Button>
+                
+                <Button 
+                  variant="outline" 
+                  className="w-full mb-4 flex items-center justify-center gap-2"
+                  onClick={handleContactSeller}
+                >
+                  <MessageCircle size={16} />
+                  Message Seller
                 </Button>
 
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-500">

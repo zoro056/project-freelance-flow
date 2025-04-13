@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -14,14 +14,23 @@ import {
 import { SearchIcon, MenuIcon, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/AuthProvider";
+import MessageBadge from "@/components/messages/MessageBadge";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const handleMessageClick = () => {
+    navigate("/messages");
+  };
+
+  // Mock unread message count - in a real app, this would come from a data source
+  const unreadMessageCount = 3;
 
   return (
     <header className="bg-white shadow">
@@ -63,6 +72,12 @@ export default function Header() {
 
           {/* Auth Buttons */}
           <div className="flex items-center gap-4">
+            {user && (
+              <div className="hidden md:block">
+                <MessageBadge count={unreadMessageCount} onClick={handleMessageClick} />
+              </div>
+            )}
+            
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -86,6 +101,9 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/my-orders">My Orders</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/messages">Messages</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
@@ -148,6 +166,13 @@ export default function Header() {
                   onClick={toggleMobileMenu}
                 >
                   Create Gig
+                </Link>
+                <Link 
+                  to="/messages" 
+                  className="block px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100"
+                  onClick={toggleMobileMenu}
+                >
+                  Messages {unreadMessageCount > 0 && <span className="ml-2 px-2 py-0.5 text-xs bg-primary text-white rounded-full">{unreadMessageCount}</span>}
                 </Link>
                 <Link 
                   to="/profile" 
