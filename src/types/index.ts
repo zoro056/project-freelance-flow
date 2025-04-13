@@ -21,6 +21,10 @@ export interface Gig {
   sellerName: string;
   sellerAvatar?: string;
   createdAt: string;
+  deliveryTime?: number;
+  revisions?: number;
+  includes?: string[];
+  orders?: number;
 }
 
 export interface Order {

@@ -96,6 +96,10 @@ export const gigs: Gig[] = [
     sellerName: "Jane Smith",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-03-10T09:15:00Z",
+    deliveryTime: 3,
+    revisions: 2,
+    includes: ["Logo in multiple formats", "Source files", "Commercial use rights", "3D mockups"],
+    orders: 240,
   },
   {
     id: "g2",
@@ -110,6 +114,10 @@ export const gigs: Gig[] = [
     sellerName: "John Doe",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-03-15T11:30:00Z",
+    deliveryTime: 7,
+    revisions: 3,
+    includes: ["5 responsive pages", "Mobile optimization", "SEO setup", "Basic CMS integration"],
+    orders: 185,
   },
   {
     id: "g3",
@@ -124,6 +132,10 @@ export const gigs: Gig[] = [
     sellerName: "Jane Smith",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-03-20T10:45:00Z",
+    deliveryTime: 5,
+    revisions: 2,
+    includes: ["Content calendar", "Custom graphics", "Engaging captions", "Hashtag research"],
+    orders: 156,
   },
   {
     id: "g4",
@@ -138,6 +150,10 @@ export const gigs: Gig[] = [
     sellerName: "John Doe",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-03-25T08:20:00Z",
+    deliveryTime: 4,
+    revisions: 1,
+    includes: ["Keyword research", "SEO optimization", "Original content", "Formatted with images"],
+    orders: 128,
   },
   {
     id: "g5",
@@ -152,6 +168,10 @@ export const gigs: Gig[] = [
     sellerName: "Jane Smith",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-04-01T12:10:00Z",
+    deliveryTime: 10,
+    revisions: 2,
+    includes: ["Script writing", "Professional voiceover", "Custom animations", "Background music"],
+    orders: 94,
   },
   {
     id: "g6",
@@ -166,6 +186,10 @@ export const gigs: Gig[] = [
     sellerName: "John Doe",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-04-05T09:40:00Z",
+    deliveryTime: 7,
+    revisions: 3,
+    includes: ["Original composition", "Commercial rights", "Multiple formats", "Stems delivery"],
+    orders: 78,
   },
   {
     id: "g7",
@@ -180,6 +204,10 @@ export const gigs: Gig[] = [
     sellerName: "Jane Smith",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-04-10T14:25:00Z",
+    deliveryTime: 14,
+    revisions: 2,
+    includes: ["Market analysis", "Financial projections", "Competitive analysis", "Growth strategy"],
+    orders: 62,
   },
   {
     id: "g8",
@@ -194,6 +222,10 @@ export const gigs: Gig[] = [
     sellerName: "John Doe",
     sellerAvatar: "/placeholder.svg",
     createdAt: "2023-04-15T08:55:00Z",
+    deliveryTime: 1,
+    revisions: 4,
+    includes: ["Custom workout plan", "Nutrition guidance", "Weekly check-ins", "Video consultations"],
+    orders: 115,
   },
 ];
 

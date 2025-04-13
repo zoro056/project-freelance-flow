@@ -58,22 +58,21 @@ export default function GigDetail() {
             
             <div className="flex items-center mb-6">
               <Avatar className="h-8 w-8 mr-2">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>S</AvatarFallback>
+                <AvatarImage src={gig.sellerAvatar || "/placeholder.svg"} />
+                <AvatarFallback>{gig.sellerName?.[0] || "S"}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-medium">{gig.sellerName}</p>
                 <div className="flex items-center">
-                  <RatingStars rating={gig.rating} />
-                  <span className="text-sm text-gray-500 ml-1">({gig.reviewCount})</span>
+                  <RatingStars rating={gig.rating || 0} />
+                  <span className="text-sm text-gray-500 ml-1">({gig.reviewCount || 0})</span>
                 </div>
               </div>
             </div>
 
             <div className="rounded-lg overflow-hidden mb-6">
-              {/* Using placeholder image since gig.imageUrl is not in the type */}
               <img 
-                src="/placeholder.svg" 
+                src={gig.image || "/placeholder.svg"} 
                 alt={gig.title} 
                 className="w-full h-[400px] object-cover"
               />
@@ -87,7 +86,7 @@ export default function GigDetail() {
             <div className="mb-8">
               <h2 className="text-xl font-bold mb-4">What's Included</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {gig.includes.map((item, index) => (
+                {gig.includes && gig.includes.map((item, index) => (
                   <div key={index} className="flex items-start">
                     <div className="mr-2 mt-1 text-green-500">✓</div>
                     <div>{item}</div>
@@ -100,13 +99,13 @@ export default function GigDetail() {
               <AccordionItem value="faq-1">
                 <AccordionTrigger>How long does it take to complete an order?</AccordionTrigger>
                 <AccordionContent>
-                  Delivery time depends on the package you select. Basic packages are typically delivered within {gig.deliveryTime} days.
+                  Delivery time depends on the package you select. Basic packages are typically delivered within {gig.deliveryTime || "3-5"} days.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="faq-2">
                 <AccordionTrigger>Do you offer revisions?</AccordionTrigger>
                 <AccordionContent>
-                  Yes, the number of revisions depends on the package. Basic packages include {gig.revisions} revisions.
+                  Yes, the number of revisions depends on the package. Basic packages include {gig.revisions || "1-2"} revisions.
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="faq-3">
@@ -199,8 +198,8 @@ export default function GigDetail() {
                       {selectedPackage === "basic" 
                         ? gig.deliveryTime 
                         : selectedPackage === "standard" 
-                          ? gig.deliveryTime - 1 
-                          : gig.deliveryTime - 2} days
+                          ? (gig.deliveryTime || 5) - 1
+                          : (gig.deliveryTime || 5) - 2} days
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -209,7 +208,7 @@ export default function GigDetail() {
                       {selectedPackage === "basic" 
                         ? gig.revisions 
                         : selectedPackage === "standard" 
-                          ? gig.revisions + 1 
+                          ? (gig.revisions || 1) + 1
                           : "Unlimited"}
                     </span>
                   </div>
@@ -232,7 +231,7 @@ export default function GigDetail() {
 
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
                   <Badge variant="outline">
-                    {gig.orders}+ orders in queue
+                    {gig.orders || "10+"}+ orders in queue
                   </Badge>
                 </div>
               </CardContent>
